@@ -1,74 +1,51 @@
 package ru.hogwarts.school.controller;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.http.HttpStatus;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.StudentService;
-import java.util.Collection;
-import java.util.Optional;
+
 @RestController
-@RequestMapping("student")
+@RequestMapping("/student")
 public class StudentController {
     private final StudentService studentService;
+
     public StudentController(StudentService studentService) {
         this.studentService = studentService;
     }
-    @PostMapping
-    public ResponseEntity<?> createStudent(@RequestBody Student student) {
-        Student temp = studentService.add(student);
-        if (temp == null) {
-            return new ResponseEntity<>("Уже существует", HttpStatus.BAD_REQUEST);
-        }
-        return ResponseEntity.ok(temp);
+
+    @GetMapping("/{id}")
+    public Student getStudentForId(@PathVariable long id) {
+        return studentService.findStudent(id);
     }
-    @GetMapping("{id}")
-    public ResponseEntity<?> readStudent(@PathVariable long id) {
-        Optional<Student> temp = studentService.get(id);
-        return temp.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+
+    @GetMapping
+    public Student findStudentByAge(@RequestParam Long ageAfter,
+                                    @RequestParam Long ageBefore) {
+        return studentService.findStudentByAge(ageAfter, ageBefore);
     }
-    @PutMapping
-    public ResponseEntity<?> updateStudent(@RequestBody Student student) {
-        Student temp = studentService.update(student);
-        if (temp == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-        return ResponseEntity.ok(temp);
+
+    @GetMapping("/faculty")
+    public Student findFacultyOfStudent(@RequestParam Faculty faculty) {
+        return studentService.findStudent(faculty.getId());
     }
-    @DeleteMapping("{id}")
-    public ResponseEntity<?> deleteStudent(@PathVariable long id) {
-        try {
-            studentService.delete(id);
-        } catch (EmptyResultDataAccessException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+
+    @PostMapping()
+    public Student createStudent(@RequestBody Student student) {
+
+        return studentService.createStudent(student);
+    }
+
+    @PutMapping()
+    public Student editStudent(@RequestBody Student student) {
+        return studentService.editStudent(student);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity deleteStudent(@PathVariable long id) {
+        studentService.deleteStudent(id);
         return ResponseEntity.ok().build();
     }
-    @GetMapping("/age/{age}")
-    public ResponseEntity<?> filterByAge(@PathVariable int age) {
-        Collection<Student> temp = studentService.filterByAge(age);
-        if (temp.isEmpty()) {
-            return new ResponseEntity<>("Нет студентов такого возраста", HttpStatus.NOT_FOUND);
-        }
-        return ResponseEntity.ok(temp);
-    }
-
-    @GetMapping()
-    public ResponseEntity<?> findByAgeBetween(@RequestParam int min, @RequestParam int max) {
-        Collection<Student> temp = studentService.findByAgeBetween(min, max);
-        if (temp.isEmpty()) {
-            return new ResponseEntity<>("Нет студентов такого возраста", HttpStatus.NOT_FOUND);
-        }
-        return ResponseEntity.ok(temp);
-    }
-
-   /* @GetMapping("/allfromfaculty/{id}")
-    public ResponseEntity<?> getStudentsFromTheFaculty(@PathVariable long id) {
-        Collection<Student> temp = studentService.getStudentsFromTheFaculty(id);
-        if (temp.isEmpty()) {
-            return new ResponseEntity<>("Нет студентов такого факультета", HttpStatus.NOT_FOUND);
-        }
-        return ResponseEntity.ok(temp);
-    }*/
 
 }

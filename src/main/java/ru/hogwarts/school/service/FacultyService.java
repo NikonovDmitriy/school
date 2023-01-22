@@ -1,55 +1,39 @@
 package ru.hogwarts.school.service;
-import org.springframework.dao.EmptyResultDataAccessException;
+
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.FacultyRepository;
 
-import java.util.Collection;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class FacultyService {
-    private final FacultyRepository facultyRepository;
+
+    private FacultyRepository facultyRepository;
 
     public FacultyService(FacultyRepository facultyRepository) {
         this.facultyRepository = facultyRepository;
     }
-    public Faculty add(Faculty faculty) {
-        if (facultyRepository.existsById(faculty.getId())) {
-            return null;
-        }
+
+    public Faculty createFaculty(Faculty faculty) {
         return facultyRepository.save(faculty);
     }
-    public Optional<Faculty> get(long id) {
-        return facultyRepository.findById(id);
-    }
-    public Faculty update(Faculty faculty) {
-        if (facultyRepository.existsById(faculty.getId())) {
-            return facultyRepository.save(faculty);
-        }
-        return null;
-    }
-    public void delete(long id) throws EmptyResultDataAccessException {
-        facultyRepository.deleteById(id);
-    }
-    public Collection<Faculty> filterByColor(String color) {
-        return facultyRepository.findAll().stream().filter(s -> s.getColor().equals(color)).toList();
+
+    public Faculty findFaculty(long id) {
+        return facultyRepository.findById(id).get();
     }
 
-    public Collection<Faculty> findByNameOrColor(String name, String color) {
+    public Faculty editFaculty(Faculty faculty) {
+        return facultyRepository.save(faculty);
+    }
+
+    public void deleteFaculty(long id) {
+        facultyRepository.deleteById(id);
+    }
+
+    public Faculty findFacultyByNameOrColor(String name, String color) {
         return facultyRepository.findByNameIgnoreCaseOrColorIgnoreCase(name, color);
     }
 
-    public Faculty getFacultyByStudentId(long id) {
-        return facultyRepository.findFacultyByStudentsId(id);
-    }
-
-    public Collection<Student> getAllStudentsFromFaculty(long id) {
-        Optional<Faculty> temp = get(id);
-        if (temp.isEmpty()) {
-            return null;
-        }
-        return temp.get().getStudents();
-    }
 }
