@@ -5,41 +5,34 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import javax.persistence.*;
 import java.util.Objects;
 
-
+@Entity
 public class Student {
-
-
-    private long id;
+    @Id
+    @GeneratedValue
+    private Long id;
     private String name;
     private int age;
 
-
     @ManyToOne
-    @JoinColumn(name = "faculty_id")
+    @JoinColumn(name = "Faculty_ID")
+
     @JsonBackReference
     private Faculty faculty;
 
-    public Student(String name, int age) {
-        this.name = name;
-        this.age = age;
+    public String getFaculty() {
+        String facultyInfo = getName() + "\n" + faculty.getName() + " " + faculty.getColor() + " " + faculty.getId();
+        return facultyInfo;
     }
 
-    public Student() {
-
+    public void setFaculty(Faculty faculty) {
+        this.faculty = faculty;
     }
 
-    public Student(long id, String name, int age) {
-    }
-
-    public Faculty getFaculty() {
-        return faculty;
-    }
-
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -64,7 +57,7 @@ public class Student {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Student student = (Student) o;
-        return id == student.id && age == student.age && Objects.equals(name, student.name);
+        return age == student.age && Objects.equals(id, student.id) && Objects.equals(name, student.name);
     }
 
     @Override
@@ -77,9 +70,7 @@ public class Student {
         return "Student{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", age=" + age +
-                '}';
+                ", age=" + age;
     }
+
 }
-
-

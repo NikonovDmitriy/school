@@ -14,20 +14,9 @@ public class Avatar {
     private String mediaType;
     @Lob
     private byte[] data;
+
     @OneToOne
     private Student student;
-
-    public Avatar() {
-
-    }
-
-    public Avatar(Long id, String filePath, String mediaType, long fileSize, Student student) {
-        this.id = id;
-        this.filePath = filePath;
-        this.mediaType = mediaType;
-        this.fileSize = fileSize;
-        this.student = student;
-    }
 
     public Long getId() {
         return id;
@@ -78,6 +67,18 @@ public class Avatar {
     }
 
     @Override
+    public String toString() {
+        return "Avatar{" +
+                "id=" + id +
+                ", filePath='" + filePath + '\'' +
+                ", fileSize=" + fileSize +
+                ", mediaType='" + mediaType + '\'' +
+                ", data=" + Arrays.toString(data) +
+                ", student=" + student +
+                '}';
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -90,17 +91,5 @@ public class Avatar {
         int result = Objects.hash(id, filePath, fileSize, mediaType, student);
         result = 31 * result + Arrays.hashCode(data);
         return result;
-    }
-
-    @Override
-    public String toString() {
-        return "Avatar{" +
-                "id=" + id +
-                ", filePath='" + filePath + '\'' +
-                ", fileSize=" + fileSize +
-                ", mediaType='" + mediaType + '\'' +
-                ", data=" + Arrays.toString(data) +
-                ", student=" + student +
-                '}';
     }
 }

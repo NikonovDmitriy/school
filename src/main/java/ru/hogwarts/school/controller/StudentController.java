@@ -7,61 +7,103 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.hogwarts.school.model.Avatar;
-import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
+import ru.hogwarts.school.service.AvatarService;
 import ru.hogwarts.school.service.StudentService;
 
-import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/student")
 public class StudentController {
     private final StudentService studentService;
+    private final AvatarService avatarService;
 
-    public StudentController(StudentService studentService) {
+    public StudentController(StudentService studentService, AvatarService avatarService) {
         this.studentService = studentService;
+        this.avatarService = avatarService;
     }
 
-    @GetMapping("/{id}")
-    public Student getStudentForId(@PathVariable long id) {
-        return studentService.findStudent(id);
+    @GetMapping("{id}")
+    public ResponseEntity<Student> getStudent(@PathVariable Long id) {
+        Student example = studentService.getStudent(id);
+        if (example != null) {
+            return ResponseEntity.ok(studentService.getStudent(id));
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
-    @GetMapping
-    public Student findStudentByAge(@RequestParam Long ageAfter,
-                                    @RequestParam Long ageBefore) {
-        return studentService.findStudentByAge(ageAfter, ageBefore);
+    @GetMapping("allStudents/{age}")
+    public List<Student> getStudentByAge(@PathVariable int age) {
+        return studentService.getStudentByAge(age);
     }
 
-    @GetMapping("/faculty/{studentId}")
-    public ResponseEntity<Faculty> findFacultyOfStudent(@PathVariable Long studentId) {
-        return ResponseEntity.ok(studentService.findStudent(studentId).getFaculty());
+    @GetMapping("studentByAge")
+    public ResponseEntity<Collection<Student>> findAllByAgeBetween(@RequestParam int max, @RequestParam int min) {
+        Collection<Student> example = studentService.findAllByAgeBetween(max, min);
+        if (example != null) {
+            return ResponseEntity.ok(example);
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
-    @PostMapping()
+    @GetMapping("studentFaculty")
+    public ResponseEntity<String> findByName(@RequestParam Long id) {
+        String f = studentService.findByName(id);
+        if (f != null) {
+            return ResponseEntity.ok(f);
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+
+    @GetMapping(value = "/{id}/avatar-from-db")
+    public ResponseEntity<byte[]> downloadAvatar(@PathVariable Long id) {
+        Avatar avatar = avatarService.findAvatar(id);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.parseMediaType(avatar.getMediaType()));
+        headers.setContentLength(avatar.getData().length);
+        return ResponseEntity.status(HttpStatus.OK).headers(headers).body(avatar.getData());
+    }
+    @GetMapping("5-students")
+    public Collection<Student> getFiveStudents(){
+        return studentService.getFiveStudents();
+    }
+
+    @PostMapping
     public Student createStudent(@RequestBody Student student) {
-
         return studentService.createStudent(student);
     }
 
-    @PutMapping()
-    public Student editStudent(@RequestBody Student student) {
-        return studentService.editStudent(student);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity deleteStudent(@PathVariable long id) {
-        studentService.deleteStudent(id);
+    @PostMapping(value = "/{id}/cover", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<String> uploadCover(@PathVariable Long id, @RequestParam MultipartFile avatar) throws IOException {
+        avatarService.uploadCover(id, avatar);
         return ResponseEntity.ok().build();
     }
 
+    @PutMapping
+    public ResponseEntity<Student> updateStudent(@RequestBody Student student) {
+        Student example = studentService.getStudent(student.getId());
+        if (example != null) {
+            return ResponseEntity.ok(studentService.updateStudent(student));
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
 
+    @DeleteMapping("{id}")
+    public ResponseEntity<Student> deleteStudent(@PathVariable Long id) {
+        Student example = studentService.getStudent(id);
+        if (example != null) {
+            studentService.deleteStudent(id);
+            return ResponseEntity.ok(example);
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
 }

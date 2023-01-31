@@ -1,23 +1,11 @@
-SELECT *
-FROM student;
+SELECT *FROM faculty;
 
-SELECT *
-FROM student
-WHERE age > 5
-  and age < 10;
+SELECT *FROM student where age>22 AND age <24;
 
-SELECT student.name
-from student;
+SELECT name from student;
 
-SELECT *
-FROM student
-where name like '%i%';
+SELECT * from student where name like '%ш%';
 
-SELECT *
-FROM student
-where age < student.id;
+SELECT * from student where age<22;
 
-SELECT * from faculty, student
-where student.id = faculty.id
-
-SELECT * from student ORDER BY age;
+SELECT * from student order by age;

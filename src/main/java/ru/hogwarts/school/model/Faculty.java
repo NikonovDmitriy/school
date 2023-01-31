@@ -5,40 +5,32 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.Objects;
-
 @Entity
 public class Faculty {
     @Id
     @GeneratedValue
-    private long id;
+    private Long id;
     private String name;
     private String color;
     @OneToMany(mappedBy = "faculty")
     @JsonManagedReference
-    private Collection<Student> students;
+    private Collection<Student> studentCollection;
 
-    public Faculty(String name, String color, Collection<Student> students) {
-        this.name = name;
-        this.color = color;
-        this.students = students;
+    public Collection<Student> getStudentCollection() {
+        return studentCollection;
     }
 
-    public Faculty(String name, String color, long id) {
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, color, studentCollection);
     }
 
-    public Collection<Student> getStudents() {
-        return students;
-    }
-
-    public Faculty() {
-
-    }
-
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -63,14 +55,8 @@ public class Faculty {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Faculty faculty = (Faculty) o;
-        return id == faculty.id && Objects.equals(name, faculty.name) && Objects.equals(color, faculty.color);
+        return Objects.equals(id, faculty.id) && Objects.equals(name, faculty.name) && Objects.equals(color, faculty.color) && Objects.equals(studentCollection, faculty.studentCollection);
     }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, color);
-    }
-
     @Override
     public String toString() {
         return "Faculty{" +
