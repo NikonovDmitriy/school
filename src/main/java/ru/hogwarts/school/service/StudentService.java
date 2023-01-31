@@ -1,11 +1,12 @@
 package ru.hogwarts.school.service;
-
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.StudentRepository;
 
 @Service
 public class StudentService {
+
+
 
     private final StudentRepository studentRepository;
 
@@ -31,5 +32,9 @@ public class StudentService {
 
     public Student findStudentByAge(Long ageAfter, Long ageBefore) {
         return studentRepository.findByAgeBetween(ageAfter, ageBefore);
+    }
+
+    private String getExtension(String fileName) {
+        return fileName.substring(fileName.lastIndexOf(".") + 1);
     }
 }
