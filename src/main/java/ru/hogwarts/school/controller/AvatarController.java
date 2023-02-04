@@ -21,6 +21,7 @@ public class AvatarController {
         this.avatarService = avatarService;
     }
 
+
     @GetMapping(value = "/{id}/avatar-from-file")
     public void downloadAvatar(@PathVariable Long id, HttpServletResponse response) throws IOException {
         Avatar avatar = avatarService.findAvatar(id);

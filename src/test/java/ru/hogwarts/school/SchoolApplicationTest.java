@@ -12,7 +12,7 @@ import ru.hogwarts.school.model.Student;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Transactional
-class SchoolApplicationTest {
+class Hogwarts2ApplicationTests {
 
     @LocalServerPort
     private int port;
@@ -96,15 +96,14 @@ class SchoolApplicationTest {
     }
 
     @Test
-    void deleteStudent() throws Exception {
+    void deleteStudent() throws RuntimeException {
         s.setName("Толя");
         s.setAge(23);
         this.testRestTemplate.postForObject("http://localhost:" + port + "/student", s, String.class);
         Long id = s.getId();
         this.testRestTemplate.delete("http://localhost:" + port + "/student" + id, s, String.class);
-//        Assertions
-//                .assertThat(this.testRestTemplate.getForObject("http://localhost:" + port + "/student" + id, HTML.class))
-//                .isEqualTo(HTML.class);
+        Assertions
+                .assertThatThrownBy(()->this.testRestTemplate.getForObject("http://localhost:" + port + "/student" + id, Student.class));
 
     }
 }

@@ -15,7 +15,7 @@ import java.util.List;
 public class FacultyController {
     public final FacultyService facultyService;
 
-    public FacultyController(FacultyService facultyService) {
+    public FacultyController(FacultyService facultyService)  {
         this.facultyService = facultyService;
     }
 
@@ -45,14 +45,6 @@ public class FacultyController {
     @GetMapping("findAll-students-by-faculty")
     public Collection<Student> findByName(@RequestParam String name) {
         return facultyService.findByName(name);
-    }
-    @GetMapping("count-students")
-    public String getAllStudents(){
-        return facultyService.getAllStudents();
-    }
-    @GetMapping("avg-age-students")
-    public String getAvgAge(){
-        return facultyService.getAvgAge();
     }
 
     @PostMapping
