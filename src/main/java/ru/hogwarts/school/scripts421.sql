@@ -1,11 +1,9 @@
-SELECT *FROM faculty;
+ALTER TABLE student add constraint age_constraint check (age > 16);
 
-SELECT *FROM student where age>22 AND age <24;
+ALTER TABLE student add constraint name_constraint unique (name);
 
-SELECT name from student;
+ALTER TABLE student add constraint name_constraint1 check ( name IS NOT NULL);
 
-SELECT * from student where name like '%ш%';
+alter table student alter column age set default 20;
 
-SELECT * from student where age<22;
-
-SELECT * from student order by age;
+alter table faculty add constraint name_constr unique (name,color);
