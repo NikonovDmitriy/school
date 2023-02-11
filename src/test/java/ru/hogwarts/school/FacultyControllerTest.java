@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -26,10 +26,9 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = FacultyController.class)
+@Import(FacultyService.class)
 public class FacultyControllerTest {
 
-    @SpyBean
-    private FacultyService facultyService;
     @MockBean
     private FacultyRepository facultyRepository;
 
@@ -63,7 +62,7 @@ public class FacultyControllerTest {
         faculty1.setName("name");
         faculty1.setColor("color");
 
-//        student.setFaculty(faculty);
+        student.setFaculty(faculty);
         student.setId(id);
         student.setName("aza");
 
