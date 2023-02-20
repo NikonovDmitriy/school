@@ -2,17 +2,10 @@ package ru.hogwarts.school.service;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+//import ru.hogwarts.school.model.Port;
 
 @Service
 public class PortService {
-
-    private RestTemplate restTemplate;
-
-    public PortService(RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
-    }
-
     @Value("${server.port}")
     private String port;
 
