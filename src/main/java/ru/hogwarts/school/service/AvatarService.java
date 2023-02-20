@@ -15,6 +15,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.stream.IntStream;
 
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
 
@@ -71,17 +72,10 @@ public class AvatarService {
     }
 
     public Integer sum4you() {
-        long start = System.currentTimeMillis();
-        int sum1 = 0;
-        for (int i = 0; i < 100_000_000; i++) {
-            sum1 =( ( 2*1 + 1*(100_000_000-1) ) / 2) *100_000_000;
-        }
-//        int sum = Stream.iterate(1, a -> a + 1)
-//                .limit(100_000_000)
-//                .mapToInt(Integer::intValue)
-//                .sum();
-        long timeRequest = System.currentTimeMillis() - start;
-        logger.info("time = " + timeRequest + " ms");
-        return sum1;
+        logger.debug("method called getExpression");
+        int limit = 1_000_000;
+        return IntStream
+                .range(1, limit + 1)
+                .sum();
     }
 }
